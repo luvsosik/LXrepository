@@ -3,224 +3,692 @@
 <head>
     <meta charset="UTF-8">
     <title>Лабораторна робота 9</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Шрифт (можна і без нього, але так красивіше) -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #050816;
+            --bg-card: #0b1020;
+            --bg-card-soft: #11182a;
+            --accent: #6366f1;
+            --accent-soft: rgba(99,102,241,0.15);
+            --accent-2: #f97316;
+            --text-main: #e5e7eb;
+            --text-muted: #9ca3af;
+            --border-soft: rgba(148,163,184,0.3);
+            --error: #f97373;
+            --success: #4ade80;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Inter", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background: radial-gradient(circle at top, #1e293b 0, #020617 45%, #000 100%);
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .page {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 24px 16px 40px;
+        }
+
+        header {
+            margin-bottom: 24px;
+            padding: 20px 20px 18px;
+            border-radius: 18px;
+            background: linear-gradient(135deg, rgba(15,23,42,0.95), rgba(15,23,42,0.85)),
+                        radial-gradient(circle at top left, rgba(94,234,212,0.18), transparent 60%),
+                        radial-gradient(circle at bottom right, rgba(129,140,248,0.25), transparent 55%);
+            border: 1px solid rgba(148,163,184,0.4);
+            box-shadow: 0 24px 60px rgba(15,23,42,0.9);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            backdrop-filter: blur(20px);
+        }
+
+        header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            margin-bottom: 6px;
+        }
+
+        header p {
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .label-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 10px 4px;
+            border-radius: 999px;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.09em;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(148,163,184,0.4);
+            color: var(--text-muted);
+            margin-bottom: 10px;
+        }
+
+        .label-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 999px;
+            background: var(--accent-2);
+            box-shadow: 0 0 12px rgba(249,115,22,0.9);
+        }
+
+        /* Навігація */
+        nav {
+            margin-top: 12px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .nav-btn {
+            flex: 1 1 auto;
+            min-width: 120px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.4);
+            background: rgba(15,23,42,0.9);
+            color: var(--text-main);
+            font-size: 12px;
+            padding: 7px 10px;
+            cursor: pointer;
+            transition: all 0.18s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            white-space: nowrap;
+        }
+
+        .nav-btn span {
+            font-size: 14px;
+        }
+
+        .nav-btn:hover {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(99,102,241,0.35);
+            transform: translateY(-1px);
+            background: radial-gradient(circle at top left, rgba(129,140,248,0.18), rgba(15,23,42,0.98));
+        }
+
+        main {
+            margin-top: 26px;
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        section {
+            border-radius: 18px;
+            padding: 16px 18px 18px;
+            background: linear-gradient(145deg, var(--bg-card), var(--bg-card-soft));
+            border: 1px solid var(--border-soft);
+            box-shadow: 0 18px 40px rgba(15,23,42,0.7);
+            position: relative;
+            overflow: hidden;
+        }
+
+        section::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at top right, rgba(99,102,241,0.09), transparent 55%);
+            pointer-events: none;
+        }
+
+        section h2 {
+            font-size: 17px;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .section-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+        }
+
+        .section-tag {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 11px;
+            color: var(--text-muted);
+            background: rgba(15,23,42,0.85);
+            border-radius: 999px;
+            padding: 2px 8px;
+            border: 1px solid rgba(148,163,184,0.35);
+        }
+
+        /* Форми / поля / кнопки */
+        input[type="text"],
+        input[type="number"],
+        input[type="email"],
+        input[type="url"],
+        textarea {
+            width: 100%;
+            padding: 8px 10px;
+            border-radius: 10px;
+            border: 1px solid rgba(148,163,184,0.45);
+            background: rgba(15,23,42,0.95);
+            color: var(--text-main);
+            font-size: 13px;
+            outline: none;
+            transition: all 0.16s ease-out;
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            color: rgba(148,163,184,0.75);
+        }
+
+        input:focus,
+        textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 1px rgba(99,102,241,0.5);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            border: 1px solid rgba(148,163,184,0.5);
+            background: radial-gradient(circle at top left, rgba(99,102,241,0.27), rgba(15,23,42,0.98));
+            color: var(--text-main);
+            font-size: 12px;
+            cursor: pointer;
+            margin-top: 6px;
+            margin-right: 6px;
+            transition: all 0.18s ease-out;
+        }
+
+        .btn.secondary {
+            background: rgba(15,23,42,0.98);
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 26px rgba(15,23,42,0.9);
+            border-color: var(--accent-2);
+        }
+
+        .btn span {
+            font-size: 14px;
+        }
+
+        label {
+            font-size: 13px;
+            color: var(--text-main);
+        }
+
+        .muted {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            align-items: center;
+            margin-top: 6px;
+        }
+
+        .row > * {
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 3px 8px;
+            border-radius: 999px;
+            font-size: 11px;
+            background: rgba(15,23,42,0.9);
+            border: 1px solid rgba(148,163,184,0.5);
+            color: var(--text-muted);
+        }
+
+        .pill-indicator {
+            width: 7px;
+            height: 7px;
+            border-radius: 999px;
+            background: var(--success);
+            box-shadow: 0 0 10px rgba(74,222,128,0.9);
+        }
+
+        /* Списки, галерея, блог */
+        #todoList {
+            margin-top: 10px;
+            padding-left: 18px;
+            font-size: 13px;
+        }
+
+        #todoList li {
+            margin-bottom: 4px;
+        }
+
+        #blog p {
+            background: rgba(15,23,42,0.95);
+            border-radius: 10px;
+            padding: 7px 9px;
+            font-size: 13px;
+            border: 1px solid rgba(148,163,184,0.35);
+            margin-top: 6px;
+        }
+
+        #gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        #gallery img {
+            border-radius: 12px;
+            border: 1px solid rgba(148,163,184,0.4);
+            box-shadow: 0 10px 28px rgba(15,23,42,0.9);
+        }
+
+        #result,
+        #convRes,
+        #recipeText,
+        #voteRes,
+        #sum {
+            font-size: 13px;
+            margin-top: 8px;
+            padding: 6px 8px;
+            border-radius: 10px;
+            background: rgba(15,23,42,0.95);
+            border: 1px solid rgba(148,163,184,0.3);
+        }
+
+        .inline-options {
+            margin-top: 6px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px 18px;
+        }
+
+        .inline-options label {
+            font-size: 13px;
+        }
+
+        .inline-options input {
+            width: auto;
+        }
+
+        @media (max-width: 720px) {
+            header {
+                position: static;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Лабораторна робота №9. Обробка подій</h1>
+<div class="page">
+    <header>
+        <div class="label-pill">
+            <span class="label-dot"></span>
+            Лабораторна робота №9
+        </div>
+        <h1>Обробка подій та поля введення в HTML</h1>
+        <p>Набір міні-інтерфейсів: список завдань, калькулятор, конвертер, блог, галерея, рецепти, голосування та магазин.</p>
 
-    <!-- 1. To-Do List -->
-    <section>
-        <h2>1. Список завдань (To-Do List)</h2>
-        <input type="text" id="task" placeholder="Нове завдання">
-        <br><br>
-        <input type="checkbox" id="extraCheck">
-        <label for="extraCheck">Позначити як пріоритетне</label><br><br>
-        <button onclick="addTask()">Додати завдання</button>
-        <ul id="todoList"></ul>
-    </section>
+        <nav>
+            <button class="nav-btn" onclick="document.getElementById('todo').scrollIntoView({behavior:'smooth'})">
+                <span>✓</span> To-Do
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('calc').scrollIntoView({behavior:'smooth'})">
+                <span>∑</span> Калькулятор
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('conv').scrollIntoView({behavior:'smooth'})">
+                <span>⇄</span> Конвертер
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('blog').scrollIntoView({behavior:'smooth'})">
+                <span>✎</span> Блог
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('gallery').scrollIntoView({behavior:'smooth'})">
+                <span>▣</span> Галерея
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('recipe').scrollIntoView({behavior:'smooth'})">
+                <span>🍲</span> Рецепт
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('vote').scrollIntoView({behavior:'smooth'})">
+                <span>★</span> Голосування
+            </button>
+            <button class="nav-btn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">
+                <span>₴</span> Магазин
+            </button>
+        </nav>
+    </header>
 
-    <hr>
+    <main>
 
-    <!-- 2. Калькулятор -->
-    <section>
-        <h2>2. Калькулятор</h2>
-        <input type="number" id="a" placeholder="Перше число">
-        <input type="number" id="b" placeholder="Друге число">
-        <br><br>
-        <button onclick="sum()">Додати</button>
-        <button onclick="sub()">Відняти</button>
-        <button onclick="mul()">Помножити</button>
-        <button onclick="div()">Поділити</button>
-        <p id="result"></p>
-    </section>
+        <!-- 1. To-Do List -->
+        <section id="todo">
+            <div class="section-tag">1 / To-Do</div>
+            <h2>Список завдань</h2>
+            <p class="section-sub">Додавання завдань із можливістю позначити пріоритетність.</p>
 
-    <hr>
+            <label for="task" class="muted">Нове завдання</label>
+            <input type="text" id="task" placeholder="Напишіть, що потрібно зробити">
 
-    <!-- 3. Конвертер одиниць -->
-    <section>
-        <h2>3. Конвертер одиниць</h2>
-        <input type="number" id="num" placeholder="Введіть число">
-        <br><br>
-        <input type="radio" name="conv" value="km" id="toMeters" checked>
-        <label for="toMeters">Кілометри → метри</label><br>
-        <input type="radio" name="conv" value="m" id="toKm">
-        <label for="toKm">Метри → кілометри</label>
-        <br><br>
-        <button onclick="convert()">Конвертувати</button>
-        <p id="convRes"></p>
-    </section>
+            <div class="inline-options">
+                <div>
+                    <input type="checkbox" id="extraCheck">
+                    <label for="extraCheck">Позначити як пріоритетне</label>
+                </div>
+            </div>
 
-    <hr>
+            <button class="btn" onclick="addTask()">
+                <span>＋</span> Додати завдання
+            </button>
 
-    <!-- 4. Персональний блог -->
-    <section>
-        <h2>4. Персональний блог</h2>
-        <textarea id="post" rows="4" cols="40" placeholder="Напишіть свій запис..."></textarea>
-        <br><br>
-        <button onclick="addPost()">Опублікувати запис</button>
-        <div id="blog"></div>
-    </section>
+            <ul id="todoList"></ul>
+        </section>
 
-    <hr>
+        <!-- 2. Калькулятор -->
+        <section id="calc">
+            <div class="section-tag">2 / Math</div>
+            <h2>Калькулятор</h2>
+            <p class="section-sub">Прості операції над двома числами.</p>
 
-    <!-- 5. Галерея зображень -->
-    <section>
-        <h2>5. Галерея зображень</h2>
-        <input type="text" id="imgUrl" placeholder="Введіть URL зображення">
-        <br><br>
-        <input type="radio" name="addImg" value="yes" id="imgYes" checked>
-        <label for="imgYes">Додано</label><br>
-        <input type="radio" name="addImg" value="no" id="imgNo">
-        <label for="imgNo">Не додано</label>
-        <br><br>
-        <button onclick="addImg()">Додати зображення</button>
-        <div id="gallery"></div>
-    </section>
+            <div class="row">
+                <div>
+                    <label for="a" class="muted">Перше число</label>
+                    <input type="number" id="a" placeholder="0">
+                </div>
+                <div>
+                    <label for="b" class="muted">Друге число</label>
+                    <input type="number" id="b" placeholder="0">
+                </div>
+            </div>
 
-    <hr>
+            <div style="margin-top:8px;">
+                <button class="btn" onclick="sum()">＋ Додати</button>
+                <button class="btn secondary" onclick="sub()">− Відняти</button>
+                <button class="btn secondary" onclick="mul()">× Помножити</button>
+                <button class="btn secondary" onclick="div()">÷ Поділити</button>
+            </div>
 
-    <!-- 6. Книга рецептів -->
-    <section>
-        <h2>6. Книга рецептів</h2>
-        <button onclick="showRecipe()">Показати рецепт борщу</button>
-        <p id="recipeText"></p>
-    </section>
+            <p id="result">Результат буде тут</p>
+        </section>
 
-    <hr>
+        <!-- 3. Конвертер -->
+        <section id="conv">
+            <div class="section-tag">3 / Converter</div>
+            <h2>Конвертер одиниць</h2>
+            <p class="section-sub">Переведення між кілометрами та метрами.</p>
 
-    <!-- 7. Система голосування -->
-    <section>
-        <h2>7. Система голосування</h2>
-        <p>Оберіть кандидата (можна кількох):</p>
-        <input type="checkbox" id="c1">
-        <label for="c1">Лев</label><br>
-        <input type="checkbox" id="c2">
-        <label for="c2">Ведмідь</label><br>
-        <input type="checkbox" id="c3">
-        <label for="c3">Єнот</label><br><br>
-        <button onclick="vote()">Проголосувати</button>
-        <p id="voteRes"></p>
-    </section>
+            <label for="num" class="muted">Значення</label>
+            <input type="number" id="num" placeholder="Введіть число">
 
-    <hr>
+            <div class="inline-options">
+                <div>
+                    <input type="radio" name="conv" value="km" id="toMeters" checked>
+                    <label for="toMeters">Кілометри → метри</label>
+                </div>
+                <div>
+                    <input type="radio" name="conv" value="m" id="toKm">
+                    <label for="toKm">Метри → кілометри</label>
+                </div>
+            </div>
 
-    <!-- 8. Простий інтернет-магазин -->
-    <section>
-        <h2>8. Простий інтернет-магазин</h2>
-        <p>Оберіть товари:</p>
-        <input type="checkbox" id="p1" value="100">
-        <label for="p1">Хліб (100 грн)</label><br>
-        <input type="checkbox" id="p2" value="250">
-        <label for="p2">Сир (250 грн)</label><br>
-        <input type="checkbox" id="p3" value="300">
-        <label for="p3">Кава (300 грн)</label><br><br>
-        <button onclick="buy()">Порахувати суму</button>
-        <p id="sum"></p>
-    </section>
+            <button class="btn" onclick="convert()">
+                <span>⇄</span> Конвертувати
+            </button>
 
-    <script>
-        // 1. To-Do List
-        function addTask() {
-            const input = document.getElementById("task");
-            const text = input.value.trim();
-            const extra = document.getElementById("extraCheck").checked;
+            <p id="convRes">Результат буде тут</p>
+        </section>
 
-            if (text === "") return;
+        <!-- 4. Блог -->
+        <section id="blog">
+            <div class="section-tag">4 / Blog</div>
+            <h2>Персональний міні-блог</h2>
+            <p class="section-sub">Створення простих текстових записів.</p>
 
-            const li = document.createElement("li");
-            li.textContent = extra ? text + " (пріоритет)" : text;
+            <label for="post" class="muted">Текст запису</label>
+            <textarea id="post" placeholder="Напишіть короткий пост..."></textarea>
 
-            document.getElementById("todoList").appendChild(li);
-            input.value = "";
-        }
+            <button class="btn" onclick="addPost()">
+                <span>✎</span> Опублікувати запис
+            </button>
 
-        // 2. Калькулятор
-        function sum(){ calc("+"); }
-        function sub(){ calc("-"); }
-        function mul(){ calc("*"); }
-        function div(){ calc("/"); }
+            <div id="blog"></div>
+        </section>
 
-        function calc(op){
-            const x = Number(document.getElementById("a").value);
-            const y = Number(document.getElementById("b").value);
-            let r;
+        <!-- 5. Галерея -->
+        <section id="gallery">
+            <div class="section-tag">5 / Gallery</div>
+            <h2>Галерея зображень</h2>
+            <p class="section-sub">Додавання картинок за URL з контролем «додано / не додано».</p>
 
-            if (op === "+") r = x + y;
-            if (op === "-") r = x - y;
-            if (op === "*") r = x * y;
-            if (op === "/") r = (y !== 0) ? x / y : "Ділення на 0";
+            <label for="imgUrl" class="muted">URL зображення</label>
+            <input type="text" id="imgUrl" placeholder="https://...">
 
-            document.getElementById("result").textContent = "Результат: " + r;
-        }
+            <div class="inline-options">
+                <div>
+                    <input type="radio" name="addImg" value="yes" id="imgYes" checked>
+                    <label for="imgYes">Додано</label>
+                </div>
+                <div>
+                    <input type="radio" name="addImg" value="no" id="imgNo">
+                    <label for="imgNo">Не додано</label>
+                </div>
+            </div>
 
-        // 3. Конвертер
-        function convert(){
-            const v = Number(document.getElementById("num").value);
-            const mode = document.querySelector('input[name="conv"]:checked').value;
-            const res = (mode === "km") ? v * 1000 : v / 1000;
-            document.getElementById("convRes").textContent = "Результат: " + res;
-        }
+            <button class="btn" onclick="addImg()">
+                <span>▣</span> Додати зображення
+            </button>
 
-        // 4. Персональний блог
-        function addPost(){
-            const text = document.getElementById("post").value.trim();
-            if (!text) return;
+            <div id="gallery"></div>
+        </section>
 
-            const p = document.createElement("p");
-            p.textContent = text;
+        <!-- 6. Рецепт -->
+        <section id="recipe">
+            <div class="section-tag">6 / Recipe</div>
+            <h2>Книга рецептів</h2>
+            <p class="section-sub">Приклад виведення тексту рецепту.</p>
 
-            document.getElementById("blog").appendChild(p);
-            document.getElementById("post").value = "";
-        }
+            <button class="btn" onclick="showRecipe()">
+                <span>🍲</span> Показати рецепт борщу
+            </button>
 
-        // 5. Галерея
-        function addImg(){
-            const url = document.getElementById("imgUrl").value.trim();
-            const mode = document.querySelector('input[name="addImg"]:checked').value;
+            <p id="recipeText">Тут з'явиться рецепт.</p>
+        </section>
 
-            if (mode === "no" || !url) return;
+        <!-- 7. Голосування -->
+        <section id="vote">
+            <div class="section-tag">7 / Vote</div>
+            <h2>Система голосування</h2>
+            <p class="section-sub">Вибір одного або кількох «кандидатів».</p>
 
-            const img = document.createElement("img");
-            img.src = url;
-            img.width = 150;
-            img.alt = "Зображення з галереї";
+            <div class="inline-options">
+                <div>
+                    <input type="checkbox" id="c1">
+                    <label for="c1">Лев</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="c2">
+                    <label for="c2">Ведмідь</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="c3">
+                    <label for="c3">Єнот</label>
+                </div>
+            </div>
 
-            document.getElementById("gallery").appendChild(img);
-            document.getElementById("imgUrl").value = "";
-        }
+            <button class="btn" onclick="vote()">
+                <span>★</span> Проголосувати
+            </button>
 
-        // 6. Рецепт
-        function showRecipe(){
-            document.getElementById("recipeText").textContent =
-                "Буряк, картопля, морква, капуста, томати, часник, сіль, перець і трошки душевної травми від викладачів.";
-        }
+            <p id="voteRes">Результат голосування з'явиться тут.</p>
+        </section>
 
-        // 7. Голосування
-        function vote(){
-            const choices = [];
-            if (document.getElementById("c1").checked) choices.push("Лев");
-            if (document.getElementById("c2").checked) choices.push("Ведмідь");
-            if (document.getElementById("c3").checked) choices.push("Єнот");
+        <!-- 8. Магазин -->
+        <section id="shop">
+            <div class="section-tag">8 / Shop</div>
+            <h2>Простий інтернет-магазин</h2>
+            <p class="section-sub">Підрахунок загальної вартості вибраних товарів.</p>
 
-            const text = choices.length
-                ? "Ваш вибір: " + choices.join(", ")
-                : "Ви ні за кого не проголосували.";
+            <div class="inline-options">
+                <div>
+                    <input type="checkbox" id="p1" value="100">
+                    <label for="p1">Хліб (100 грн)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="p2" value="250">
+                    <label for="p2">Сир (250 грн)</label>
+                </div>
+                <div>
+                    <input type="checkbox" id="p3" value="300">
+                    <label for="p3">Кава (300 грн)</label>
+                </div>
+            </div>
 
-            document.getElementById("voteRes").textContent = text;
-        }
+            <button class="btn" onclick="buy()">
+                <span>₴</span> Порахувати суму
+            </button>
 
-        // 8. Магазин
-        function buy(){
-            let total = 0;
+            <p id="sum">Загальна сума з'явиться тут.</p>
+        </section>
+    </main>
+</div>
 
-            if (document.getElementById("p1").checked)
-                total += Number(document.getElementById("p1").value);
-            if (document.getElementById("p2").checked)
-                total += Number(document.getElementById("p2").value);
-            if (document.getElementById("p3").checked)
-                total += Number(document.getElementById("p3").value);
+<script>
+    // 1. To-Do List
+    function addTask() {
+        const input = document.getElementById("task");
+        const text = input.value.trim();
+        const extra = document.getElementById("extraCheck").checked;
 
-            document.getElementById("sum").textContent = "Разом: " + total + " грн";
-        }
-    </script>
+        if (text === "") return;
+
+        const li = document.createElement("li");
+        li.textContent = extra ? text + " (пріоритет)" : text;
+
+        document.getElementById("todoList").appendChild(li);
+        input.value = "";
+    }
+
+    // 2. Калькулятор
+    function sum(){ calc("+"); }
+    function sub(){ calc("-"); }
+    function mul(){ calc("*"); }
+    function div(){ calc("/"); }
+
+    function calc(op){
+        const x = Number(document.getElementById("a").value);
+        const y = Number(document.getElementById("b").value);
+        let r;
+
+        if (op === "+") r = x + y;
+        if (op === "-") r = x - y;
+        if (op === "*") r = x * y;
+        if (op === "/") r = (y !== 0) ? x / y : "Ділення на 0";
+
+        document.getElementById("result").textContent = "Результат: " + r;
+    }
+
+    // 3. Конвертер
+    function convert(){
+        const v = Number(document.getElementById("num").value);
+        const mode = document.querySelector('input[name="conv"]:checked').value;
+        const res = (mode === "km") ? v * 1000 : v / 1000;
+        document.getElementById("convRes").textContent = "Результат: " + res;
+    }
+
+    // 4. Блог
+    function addPost(){
+        const text = document.getElementById("post").value.trim();
+        if (!text) return;
+
+        const p = document.createElement("p");
+        p.textContent = text;
+
+        document.querySelector("section#blog div#blog").appendChild(p);
+        document.getElementById("post").value = "";
+    }
+
+    // 5. Галерея
+    function addImg(){
+        const url = document.getElementById("imgUrl").value.trim();
+        const mode = document.querySelector('input[name="addImg"]:checked').value;
+
+        if (mode === "no" || !url) return;
+
+        const img = document.createElement("img");
+        img.src = url;
+        img.width = 150;
+        img.alt = "Зображення з галереї";
+
+        document.querySelector("section#gallery div#gallery").appendChild(img);
+        document.getElementById("imgUrl").value = "";
+    }
+
+    // 6. Рецепт
+    function showRecipe(){
+        document.getElementById("recipeText").textContent =
+            "Буряк, картопля, морква, цибуля, капуста, томати, часник, сіль, перець та кілька годин терпіння. " +
+            "Спочатку обсмажити овочі, додати воду, зварити бульйон, потім – капусту і заправку з томатом. Подавати зі сметаною.";
+    }
+
+    // 7. Голосування
+    function vote(){
+        const choices = [];
+        if (document.getElementById("c1").checked) choices.push("Лев");
+        if (document.getElementById("c2").checked) choices.push("Ведмідь");
+        if (document.getElementById("c3").checked) choices.push("Єнот");
+
+        const text = choices.length
+            ? "Ваш вибір: " + choices.join(", ")
+            : "Ви ні за кого не проголосували.";
+
+        document.getElementById("voteRes").textContent = text;
+    }
+
+    // 8. Магазин
+    function buy(){
+        let total = 0;
+
+        if (document.getElementById("p1").checked)
+            total += Number(document.getElementById("p1").value);
+        if (document.getElementById("p2").checked)
+            total += Number(document.getElementById("p2").value);
+        if (document.getElementById("p3").checked)
+            total += Number(document.getElementById("p3").value);
+
+        document.getElementById("sum").textContent = "Разом: " + total + " грн";
+    }
+</script>
 </body>
 </html>
